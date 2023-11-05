@@ -193,7 +193,6 @@ body{
   margin-bottom: 5px;
   color: white;
 }
-
 .form-group input {
   width: 100%; /* Set the input field width to 100% to expand to the container's width */
   padding: 15px; /* Increase the padding for height */
@@ -211,6 +210,11 @@ body{
   border-radius: 5px;
   cursor: pointer;
 }
+
+ .captcha {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
 
     @keyframes fadeIn {
       0% {
@@ -242,14 +246,14 @@ body{
   </header>
   <body1>
   <span class="blink">
-	<h3 align=center style="color: red">${message}</h3>
-	</span>
+  <h3 align=center style="color: red">${message}</h3>
+  </span>
   
     <div class="login-box">
       <h2>Login</h2>
      
           <br/>
-      <form method="post" action="checklogin">
+      <form method="post" action="checklogin" onsubmit="return validateCaptcha();">
         <div class="form-group">
           <label for="username">Username</label>
           <input type="text" id="username" name="email" placeholder="Enter your username">
@@ -258,11 +262,45 @@ body{
           <label for="password">Password</label>
           <input type="password" id="password" name="pwd" placeholder="Enter your password">
         </div>
+        <div class="captcha" id="captcha" style="margin-bottom: 30px;
+  color: white;
+  text-shadow: 0 0 3px #FF0000, 0 0 5px #0000FF; font-family:cursive; ;"></div>
+        <input type="text" id="captcha-input" placeholder="Enter the CAPTCHA" required><br><br>
         <div class="form-group">
           <button type="submit" onclick="login()">Login</button>
         </div>
       </form>
     </div>
+    <script>
+        // Generate a random CAPTCHA code
+        function generateCaptcha() {
+            var captcha = '';
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            for (var i = 0; i < 6; i++) {
+                captcha += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            document.getElementById('captcha').textContent = captcha;
+        }
+
+        // Validate the entered CAPTCHA
+        function validateCaptcha() {
+            var enteredCaptcha = document.getElementById('captcha-input').value;
+            var displayedCaptcha = document.getElementById('captcha').textContent;
+            
+            if (enteredCaptcha === displayedCaptcha) {
+                alert('CAPTCHA validation successful. You can proceed to login.');
+                return true;
+            } else {
+                alert('CAPTCHA validation failed. Please try again.');
+                generateCaptcha(); // Regenerate CAPTCHA
+                document.getElementById('captcha-input').value = '';
+                return false;
+            }
+        }
+
+        // Initial CAPTCHA generation
+        generateCaptcha();
+    </script>
   </body1>
   
 </body>
